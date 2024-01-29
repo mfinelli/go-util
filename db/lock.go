@@ -18,6 +18,13 @@ package db
 
 import "hash/crc32"
 
+// A query to try and obtain an advisory lock (for e.g., running database
+// migrations).
+const ADVISORY_LOCK_QUERY = "SELECT pg_try_advisory_lock($1) as unlocked"
+
+// A query to release an advisory lock (e.g., after migrations are complete).
+const ADVISORY_UNLOCK_QUERY = "SELECT pg_advisory_unlock($1) as unlocked"
+
 // The GenerateLockKey function returns an integer that can be used as the
 // parameter to the PostgreSQL advisory lock functions based on the name of
 // the database for which we want to acquire the lock. Note that advisory lock
