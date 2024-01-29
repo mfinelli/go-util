@@ -1,5 +1,8 @@
 # go-util
 
+[![Default](https://github.com/mfinelli/go-util/actions/workflows/default.yml/badge.svg)](https://github.com/mfinelli/go-util/actions/workflows/default.yml)
+[![Go Reference](https://pkg.go.dev/badge/go.finelli.dev/util.svg)](https://pkg.go.dev/go.finelli.dev/util)
+
 Some random functions that I don't want to copy/paste into multiple projects.
 
 ## license
