@@ -22,6 +22,39 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func TestBuildDSN(t *testing.T) {
+	tests := []struct {
+		input  PostgresqlConnectionDetails
+		output string
+	}{
+		{
+			PostgresqlConnectionDetails{
+				"host", "user", "pass", "db", 5432, "", "",
+			},
+			"host=host user=user password=pass dbname=db " +
+				"port=5432",
+		},
+		{
+			PostgresqlConnectionDetails{
+				"host", "user", "", "db", 5432, "require",
+				"UTC",
+			},
+			"host=host user=user dbname=db port=5432 " +
+				"sslmode=require TimeZone=UTC",
+		},
+		{
+			PostgresqlConnectionDetails{
+				"host", "", "", "db", 5432, "", "",
+			},
+			"host=host user='' dbname=db port=5432",
+		},
+	}
+
+	for _, test := range tests {
+		assert.Equal(t, test.output, test.input.BuildDSN())
+	}
+}
+
 func TestEscapePsqlConnectionValue(t *testing.T) {
 	tests := []struct {
 		input  string

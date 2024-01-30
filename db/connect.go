@@ -21,6 +21,51 @@ import (
 	"strings"
 )
 
+// The PostgresqlConnectionDetails type is a representation of the connection
+// options that we care about for connecting to a PostgreSQL server that we
+// can transform into a data source name (DSN).
+type PostgresqlConnectionDetails struct {
+	Hostname string // PostgreSQL server hostname
+	Username string // PostgreSQL server username
+	Password string // PostgreSQL server password
+	Database string // PostgreSQL database name
+	Port     int    // PostgreSQL server port
+	Sslmode  string // PostgreSQL SSL mode
+	Timezone string // PostgreSQL optional timezone connection parameter
+}
+
+// The BuildDSN function creates a DSN from the connection details that can
+// be passed directly to the database open functions.
+func (d *PostgresqlConnectionDetails) BuildDSN() string {
+	parts := []string{}
+
+	parts = append(parts, fmt.Sprintf("host=%s",
+		escapePsqlConnectionValue(d.Hostname)))
+	parts = append(parts, fmt.Sprintf("user=%s",
+		escapePsqlConnectionValue(d.Username)))
+
+	if d.Password != "" {
+		parts = append(parts, fmt.Sprintf("password=%s",
+			escapePsqlConnectionValue(d.Password)))
+	}
+
+	parts = append(parts, fmt.Sprintf("dbname=%s",
+		escapePsqlConnectionValue(d.Database)))
+	parts = append(parts, fmt.Sprintf("port=%d", d.Port))
+
+	if d.Sslmode != "" {
+		parts = append(parts, fmt.Sprintf("sslmode=%s",
+			escapePsqlConnectionValue(d.Sslmode)))
+	}
+
+	if d.Timezone != "" {
+		parts = append(parts, fmt.Sprintf("TimeZone=%s",
+			escapePsqlConnectionValue(d.Timezone)))
+	}
+
+	return strings.Join(parts, " ")
+}
+
 // The escapePsqlConnectionValue function escapes the provided string so that
 // it can be used correctly in a PostgreSQL DSN.
 // https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-CONNSTRING
