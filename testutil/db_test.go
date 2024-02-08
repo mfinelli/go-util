@@ -41,7 +41,7 @@ func TestDropAllTables(t *testing.T) {
 		assert.Zero(t, count)
 	}
 
-	_, err = db.Exec(ctx, "CREATE TABLE testtable (id INT GENERATED " +
+	_, err = db.Exec(ctx, "CREATE TABLE testtable (id INT GENERATED "+
 		"ALWAYS AS IDENTITY, CONSTRAINT pkey PRIMARY KEY (id));")
 	assert.Nil(t, err)
 
