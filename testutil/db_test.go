@@ -28,8 +28,8 @@ func TestDropAllTables(t *testing.T) {
 	conn := "postgres://goutil:goutil@localhost:5432/goutil"
 	ctx := context.Background()
 	db, err := pgxpool.New(ctx, conn)
-	defer db.Close()
 	assert.Nil(t, err)
+	defer db.Close()
 
 	query := "SELECT COUNT(1) FROM information_schema.tables " +
 		"WHERE table_schema = 'public';"

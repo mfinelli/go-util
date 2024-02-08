@@ -27,7 +27,7 @@ import (
 
 func DropAllTables(ctx context.Context, db *pgxpool.Pool) error {
 	if !testing.Testing() {
-		return fmt.Errorf("only drop all tables during testing!")
+		return fmt.Errorf("only drop all tables during testing")
 	}
 
 	query := "SELECT table_name AS table FROM information_schema.tables " +
