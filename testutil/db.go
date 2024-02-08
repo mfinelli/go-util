@@ -25,6 +25,9 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
+// DropAllTables does it what it says on the tin... it drops all of the tables
+// that currently exist. Only suitable for testing, if you try to run this
+// function outside of test it will return an error.
 func DropAllTables(ctx context.Context, db *pgxpool.Pool) error {
 	if !testing.Testing() {
 		return fmt.Errorf("only drop all tables during testing")
