@@ -6,6 +6,18 @@ jobs:
   main:
     name: CI
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:alpine
+        env:
+          POSTGRES_DB: goutil
+          POSTGRES_USER: goutil
+          POSTGRES_PASSWORD: goutil
+        options: >-
+          --health-cmd pg_isready --health-interval 10s --health-timeout 5s
+          --health-retries 5
+        ports:
+          - '5432:5432'
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-go@v5
