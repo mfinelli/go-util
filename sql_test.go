@@ -26,3 +26,8 @@ func TestSqliteIntToBool(t *testing.T) {
 	assert.True(t, SqliteIntToBool(1))
 	assert.False(t, SqliteIntToBool(0))
 }
+
+func TestSqliteBoolToInt(t *testing.T) {
+	assert.Equal(t, int64(1), SqliteBoolToInt(true))
+	assert.Equal(t, int64(0), SqliteBoolToInt(false))
+}

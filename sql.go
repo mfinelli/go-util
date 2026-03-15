@@ -22,3 +22,12 @@ package util
 func SqliteIntToBool(b int64) bool {
 	return b == 1
 }
+
+// SqliteBoolToInt converts a bool into the correct sqlite integer
+func SqliteBoolToInt(b bool) int64 {
+	if b {
+		return 1
+	}
+
+	return 0
+}
