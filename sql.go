@@ -40,3 +40,13 @@ func SqliteBoolToInt(b bool) int64 {
 func NullString(s string) sql.NullString {
 	return sql.NullString{String: s, Valid: s != ""}
 }
+
+// NullStringPtr is like NullString for a *string: NULL when s is nil or points
+// to an empty string.
+func NullStringPtr(s *string) sql.NullString {
+	if s == nil {
+		return sql.NullString{}
+	}
+
+	return NullString(*s)
+}

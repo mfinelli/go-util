@@ -67,3 +67,29 @@ func TestNullString(t *testing.T) {
 		})
 	}
 }
+
+func TestNullStringPtr(t *testing.T) {
+	t.Parallel()
+
+	empty, text, space := "", "hello", " "
+
+	tests := []struct {
+		name string
+		in   *string
+		want sql.NullString
+	}{
+		{"nil is NULL", nil, sql.NullString{}},
+		{"pointer to empty is NULL", &empty, sql.NullString{}},
+		{"pointer to text", &text, sql.NullString{String: "hello", Valid: true}},
+		{"pointer to whitespace is a value", &space, sql.NullString{String: " ", Valid: true}},
+	}
+
+	for _, tc := range tests {
+		tc := tc
+		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
+
+			assert.Equal(t, tc.want, NullStringPtr(tc.in))
+		})
+	}
+}
