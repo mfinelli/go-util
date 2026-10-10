@@ -16,6 +16,8 @@
 
 package util
 
+import "database/sql"
+
 // SqliteIntToBool converts an integer returned from sqlite (which doesn't
 // have a proper boolean type) into a boolean because I can never remember
 // which value is true and which is false. (1 is true and 0 is false)
@@ -30,4 +32,11 @@ func SqliteBoolToInt(b bool) int64 {
 	}
 
 	return 0
+}
+
+// NullString converts a string into a sql.NullString that is NULL when the
+// string is empty, for columns where NULL means "no value". Nothing is
+// trimmed: a string of only whitespace is a value.
+func NullString(s string) sql.NullString {
+	return sql.NullString{String: s, Valid: s != ""}
 }

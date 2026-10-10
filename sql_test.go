@@ -17,6 +17,7 @@
 package util
 
 import (
+	"database/sql"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -30,4 +31,39 @@ func TestSqliteIntToBool(t *testing.T) {
 func TestSqliteBoolToInt(t *testing.T) {
 	assert.Equal(t, int64(1), SqliteBoolToInt(true))
 	assert.Equal(t, int64(0), SqliteBoolToInt(false))
+}
+
+func TestNullString(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name string
+		in   string
+		want sql.NullString
+	}{
+		{"empty is NULL", "", sql.NullString{}},
+		{"text", "hello", sql.NullString{String: "hello", Valid: true}},
+		{"whitespace is a value", " ", sql.NullString{String: " ", Valid: true}},
+		{"zero as text is a value", "0", sql.NullString{String: "0", Valid: true}},
+		{"unicode", "módctl-モッド", sql.NullString{String: "módctl-モッド", Valid: true}},
+	}
+
+	for _, tc := range tests {
+		tc := tc
+		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
+
+			got := NullString(tc.in)
+			assert.Equal(t, tc.want, got)
+
+			// what the database driver is actually going to see
+			v, err := got.Value()
+			assert.NoError(t, err)
+			if tc.want.Valid {
+				assert.Equal(t, tc.in, v)
+			} else {
+				assert.Nil(t, v)
+			}
+		})
+	}
 }
