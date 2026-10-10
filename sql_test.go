@@ -25,13 +25,76 @@ import (
 )
 
 func TestSqliteIntToBool(t *testing.T) {
-	assert.True(t, SqliteIntToBool(1))
-	assert.False(t, SqliteIntToBool(0))
+	t.Parallel()
+
+	tests := []struct {
+		name string
+		in   int64
+		want bool
+	}{
+		{"zero is false", 0, false},
+		{"one is true", 1, true},
+		{"any other positive value is true", 2, true},
+		{"a negative value is true", -1, true},
+		{"the largest value is true", math.MaxInt64, true},
+		{"the smallest value is true", math.MinInt64, true},
+	}
+
+	for _, tc := range tests {
+		tc := tc
+		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
+
+			assert.Equal(t, tc.want, SqliteIntToBool(tc.in))
+		})
+	}
 }
 
 func TestSqliteBoolToInt(t *testing.T) {
-	assert.Equal(t, int64(1), SqliteBoolToInt(true))
-	assert.Equal(t, int64(0), SqliteBoolToInt(false))
+	t.Parallel()
+
+	tests := []struct {
+		name string
+		in   bool
+		want int64
+	}{
+		{"true is one", true, 1},
+		{"false is zero", false, 0},
+	}
+
+	for _, tc := range tests {
+		tc := tc
+		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
+
+			assert.Equal(t, tc.want, SqliteBoolToInt(tc.in))
+		})
+	}
+}
+
+func TestSqliteBoolRoundTrip(t *testing.T) {
+	t.Parallel()
+
+	t.Run("a bool survives the trip through an integer", func(t *testing.T) {
+		t.Parallel()
+
+		for _, b := range []bool{true, false} {
+			assert.Equal(t, b, SqliteIntToBool(SqliteBoolToInt(b)))
+		}
+	})
+
+	t.Run("an integer comes back as zero or one", func(t *testing.T) {
+		t.Parallel()
+
+		for _, i := range []int64{-5, -1, 0, 1, 2, 100} {
+			want := int64(1)
+			if i == 0 {
+				want = 0
+			}
+
+			assert.Equal(t, want, SqliteBoolToInt(SqliteIntToBool(i)), "input %d", i)
+		}
+	})
 }
 
 func TestNullString(t *testing.T) {
