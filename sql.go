@@ -50,3 +50,13 @@ func NullStringPtr(s *string) sql.NullString {
 
 	return NullString(*s)
 }
+
+// NullInt64Ptr converts an *int64 into a sql.NullInt64 that is NULL when i is
+// nil. Unlike with strings, zero is a value and not NULL.
+func NullInt64Ptr(i *int64) sql.NullInt64 {
+	if i == nil {
+		return sql.NullInt64{}
+	}
+
+	return sql.NullInt64{Int64: *i, Valid: true}
+}

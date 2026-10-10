@@ -18,6 +18,7 @@ package util
 
 import (
 	"database/sql"
+	"math"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -90,6 +91,43 @@ func TestNullStringPtr(t *testing.T) {
 			t.Parallel()
 
 			assert.Equal(t, tc.want, NullStringPtr(tc.in))
+		})
+	}
+}
+
+func TestNullInt64Ptr(t *testing.T) {
+	t.Parallel()
+
+	zero, positive, negative, largest := int64(0), int64(42), int64(-7), int64(math.MaxInt64)
+
+	tests := []struct {
+		name string
+		in   *int64
+		want sql.NullInt64
+	}{
+		{"nil is NULL", nil, sql.NullInt64{}},
+		{"zero is a value", &zero, sql.NullInt64{Int64: 0, Valid: true}},
+		{"positive", &positive, sql.NullInt64{Int64: 42, Valid: true}},
+		{"negative", &negative, sql.NullInt64{Int64: -7, Valid: true}},
+		{"largest", &largest, sql.NullInt64{Int64: math.MaxInt64, Valid: true}},
+	}
+
+	for _, tc := range tests {
+		tc := tc
+		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
+
+			got := NullInt64Ptr(tc.in)
+			assert.Equal(t, tc.want, got)
+
+			// what the database driver is actually going to see
+			v, err := got.Value()
+			assert.NoError(t, err)
+			if tc.want.Valid {
+				assert.Equal(t, tc.want.Int64, v)
+			} else {
+				assert.Nil(t, v)
+			}
 		})
 	}
 }
