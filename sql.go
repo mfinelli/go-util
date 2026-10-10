@@ -20,9 +20,10 @@ import "database/sql"
 
 // SqliteIntToBool converts an integer returned from sqlite (which doesn't
 // have a proper boolean type) into a boolean because I can never remember
-// which value is true and which is false. (1 is true and 0 is false)
-func SqliteIntToBool(b int64) bool {
-	return b == 1
+// which value is true and which is false. (0 is false and anything else e.g.,
+// 1 is true)
+func SqliteIntToBool(i int64) bool {
+	return i != 0
 }
 
 // SqliteBoolToInt converts a bool into the correct sqlite integer
