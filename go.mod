@@ -3,7 +3,7 @@ module go.finelli.dev/util
 go 1.26.7
 
 require (
-	github.com/jackc/pgx/v5 v5.11.0
+	github.com/jackc/pgx/v5 v5.12.0
 	github.com/stretchr/testify v1.12.1
 )
 
